@@ -1,12 +1,17 @@
-const canvas = document.getElementById('canvas1')
-const ctx = canvas.getContext('2d')
+const canvas = document.getElementById('canvas1');
+const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-const bot_image = new Image();
+
 const components = {
     bot: '/images/components/space_bot.png',
     player: '/images/player/space_player_down.png'
 }
+
+const main_image = new Image();
+main_image.src = 'images/space_bot.png';
+main_image.alt = 'error';
+
 
 let particleArray = [];
 let playerArray = [];
@@ -30,8 +35,9 @@ class Particle {
         this.y += this.vy;
     }
     draw(){
-        ctx.beginPath()
+        // ctx.beginPath()
         ctx.fillStyle = this.color;
+        ctx.drawImage(main_image, this.x, this.y, this.width, this.height);
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
     }
@@ -47,16 +53,19 @@ class Player {
         this.speed = 10;
         this.width = 120;
         this.height = 200;
-        this.originalX = canvas.width / 2;
-        this.originalY = canvas.height - 20;
+        this.originalX = canvas.width / 2.2;
+        this.originalY = canvas.height - this.height - 10;
         this.dead = false;
         this.color = 'blue';
     }
     uptade(){
         this.x += this.vx;
         this.y += this.vy;
+        this.x = this.originalX;
+        this.y = this.originalY;
     }
     draw(){
+        
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
@@ -65,6 +74,8 @@ class Player {
 
 function init() {
     playerArray.push(new Player());
+    playerArray[0].uptade();
+    playerArray[0].draw();
     for (let i = 0; i < particleNum; i++) {
         particleArray.push(new Particle());
     }
