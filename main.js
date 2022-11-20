@@ -5,7 +5,7 @@ canvas.height = window.innerHeight;
 
 const components = {
     bot: '/images/components/space_bot.png',
-    player: '/images/player/space_player_down.png'
+    player: '/images/player/space_player_down.png',
 }
 
 const main_image = new Image();
