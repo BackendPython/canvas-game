@@ -8,6 +8,7 @@ canvas.height = window.innerHeight;
 let enemyleNum = 10;
 let enemyArray = [];
 let playerArray = [];
+let score = 0;
 
 let bot_image = document.getElementById('space_bot');
 let space_background_image = document.getElementById('space_background');
@@ -29,11 +30,10 @@ let components = {
     space_bullet_green: space_bullet_green_image,
 }
 
-ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
 
 class Enemy {
     constructor(){
-        this.x = 350;
+        this.x = canvas.width/4;
         this.y = 0;
         this.vx = 0;
         this.vy = 0;
@@ -63,8 +63,8 @@ class Player {
         this.y = 0;
         this.vx = 0;
         this.vy = 0;
-        this.size = 5;
-        this.speed = 10;
+        this.size = 150;
+        this.speed = 0.1;
         this.width = 150;
         this.height = 150;
         this.originalX = canvas.width / 2.2;
@@ -97,32 +97,44 @@ class Player {
 
 function init() {
     playerArray.push(new Player());
-    playerArray[0].uptade();
-    playerArray[0].draw();
     for (let i = 0; i < enemyleNum; i++) {
         enemyArray.push(new Enemy());
     }
-    let num = 0;
+    let num = enemyArray[0].x;
     for (let i = 0; i < enemyArray.length; i++) {
-        if (i==10) {
-            num = 0;
-            enemyArray[i].x += num;
-        }
-        // else if (i>10) {
-        //     enemyArray[i].x += num;
-        //     enemyArray[i].y += enemyArray[i].y + 250;
-        //     num += 180;
-        // }
-        else{
-            enemyArray[i].x += num;
-            num += 130;
-        }
+        enemyArray[i].x = num;
+        num += 120;
+    }
+
+} init();
+
+
+function draw(){
+    playerArray[0].uptade();
+    playerArray[0].draw();
+    for (let i = 0; i < enemyArray.length; i++) {
         enemyArray[i].uptade();
         enemyArray[i].draw();
     }
-
 }
-init();
+
+function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'red';
+    ctx.font = '50px san-serif';
+    ctx.strokeText('Hello', 100, 100);
+    ctx.fillText('Hello', 100, 100);
+    ctx.fill();
+
+    draw();
+    keydownPlayer();
+    handleColision();
+
+    requestAnimationFrame(animate);
+}
+
+animate()
 
 let player_detals = {
     player_x: playerArray[0].x,
@@ -139,26 +151,21 @@ function handleColision() {
 }
 
 function player_push() {
-    player_detals.x = playerArray[0].x;
-    player_detals.y = playerArray[0].y;
-    playerArray.pop();
-    playerArray.push(new Player());
-    if (keydown_info.key=='left') {
-        playerArray[0].originalX = player_detals.player_x - 0.1;
+    if (keydown_info.key=='left'&&playerArray[0].x > 0) {
+        playerArray[0].originalX = player_detals.player_x - playerArray[0].speed;
         playerArray[0].originalY = player_detals.player_y;
     }
-    else if (keydown_info.key=='right') {
-        playerArray[0].originalX = player_detals.player_x + 0.1;
+    else if (keydown_info.key=='right'&&playerArray[0].x<canvas.width-playerArray[0].width) {
+        playerArray[0].originalX = player_detals.player_x + playerArray[0].speed;
         playerArray[0].originalY = player_detals.player_y;
     }
     else if (keydown_info.key=='down') {
         // paste down fun()
     }
-    player_detals.player_x = playerArray[0].originalX;
-    player_detals.player_y = playerArray[0].originalY;
+    player_detals.player_x = playerArray[0].x;
+    player_detals.player_y = playerArray[0].y;
     playerArray[0].uptade();
     playerArray[0].draw();
-    console.log(player_detals.player_x, player_detals.player_y)
 }
 
 function keydownPlayer() {
@@ -166,23 +173,25 @@ function keydownPlayer() {
         let keycode = e.key;
         if (keycode=='ArrowLeft') {
             keydown_info.key = 'left';
+            player_push();
         }
         else if (keycode=='ArrowRight') {
             keydown_info.key = 'right';
+            player_push();
         }
-        // else if (keycode=='ArrowLeft') {
-        //     keydown_info.key = 'left';
+        // else if (keycode) {
+        //     keydown_info.key = 'down';
         // }
-        player_push();
+    })
+    window.addEventListener('keyup', function (e) {
+        let keycode = e.key;
+        if (keycode=='ArrowLeft') {
+            keydown_info.key = 'down';
+        }
+        if (keycode=='ArrowRight') {
+            keydown_info.key = 'down';
+        }
     })
 }
-
-function animate(){
-    keydownPlayer();
-    handleColision();
-    requestAnimationFrame(animate);
-}
-
-animate()
 
 })
