@@ -94,6 +94,7 @@ class Player {
     }
 }
 
+
 function init() {
     playerArray.push(new Player());
     playerArray[0].uptade();
@@ -123,15 +124,11 @@ function init() {
 }
 init();
 
-function keydownPlayer() {
-    window.addEventListener('keydown', function (e) {
-        let keycode = e.key;
-        if (keycode=='ArrowLeft') {
-            keydown_info.key = 'left';
-            player_push();
-        }
-    })
+let player_detals = {
+    player_x: playerArray[0].x,
+    player_y: playerArray[0].y,
 }
+
 
 function handleColision() {
     
@@ -142,21 +139,42 @@ function handleColision() {
 }
 
 function player_push() {
+    player_detals.x = playerArray[0].x;
+    player_detals.y = playerArray[0].y;
     playerArray.pop();
     playerArray.push(new Player());
     if (keydown_info.key=='left') {
-        playerArray[0].originalX = components.player_x - 0.1;
-        playerArray[0].originalY = components.player_y;
+        playerArray[0].originalX = player_detals.player_x - 0.1;
+        playerArray[0].originalY = player_detals.player_y;
     }
     else if (keydown_info.key=='right') {
-        playerArray[0].originalX = components.player_x - 0.1;
-        playerArray[0].originalY = components.player_y;
+        playerArray[0].originalX = player_detals.player_x + 0.1;
+        playerArray[0].originalY = player_detals.player_y;
     }
     else if (keydown_info.key=='down') {
         // paste down fun()
     }
+    player_detals.player_x = playerArray[0].originalX;
+    player_detals.player_y = playerArray[0].originalY;
     playerArray[0].uptade();
     playerArray[0].draw();
+    console.log(player_detals.player_x, player_detals.player_y)
+}
+
+function keydownPlayer() {
+    window.addEventListener('keydown', function (e) {
+        let keycode = e.key;
+        if (keycode=='ArrowLeft') {
+            keydown_info.key = 'left';
+        }
+        else if (keycode=='ArrowRight') {
+            keydown_info.key = 'right';
+        }
+        // else if (keycode=='ArrowLeft') {
+        //     keydown_info.key = 'left';
+        // }
+        player_push();
+    })
 }
 
 function animate(){
