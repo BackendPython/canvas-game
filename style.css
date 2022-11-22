@@ -12,3 +12,7 @@
     position: absolute;
     background: black;
 }
+
+.images{
+    display: none;
+}
