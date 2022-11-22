@@ -16,13 +16,6 @@ let player_left_image = document.getElementById('space_player_left');
 let player_right_image = document.getElementById('space_player_right');
 let space_bullet_green_image = document.getElementById('space_bullet_green');
 
-
-// bot_image.src = 'images/space_bot.png';
-// player_down_image.src = 'images/space_player_down.png';
-// player_left_image.src = 'images/space_player_left.png';
-// player_right_image.src = 'images/space_player_right.png';
-// space_bullet_green.src = 'images/space_bullet_green.png';
-
 let keydown_info = {
     key: 'down',
 }
@@ -34,9 +27,6 @@ let components = {
     player_right: player_right_image,
     space_background: space_background_image,
     space_bullet_green: space_bullet_green_image,
-    player_x: playerArray[0].x,
-    player_y: playerArray[0].y,
-
 }
 
 ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
