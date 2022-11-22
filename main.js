@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let enemyleNum = 10;
+let enemyleNum = 5;
 let enemyArray = [];
 let playerArray = [];
 let score = 0;
@@ -80,7 +80,6 @@ class Player {
     }
     draw(){
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
         if (keydown_info.key=='down') {
             ctx.drawImage(components.player_down, this.x, this.y, this.width, this.height);
         }
@@ -116,16 +115,15 @@ function draw(){
         enemyArray[i].uptade();
         enemyArray[i].draw();
     }
+    ctx.fillStyle = 'red';
+    ctx.font = '50px san-serif';
+    ctx.fillText(`Score: ${score}`, 100, 100);
+    ctx.fill();
 }
 
 function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'red';
-    ctx.font = '50px san-serif';
-    ctx.strokeText('Hello', 100, 100);
-    ctx.fillText('Hello', 100, 100);
-    ctx.fill();
 
     draw();
     keydownPlayer();
@@ -152,18 +150,16 @@ function handleColision() {
 
 function player_push() {
     if (keydown_info.key=='left'&&playerArray[0].x > 0) {
-        playerArray[0].originalX = player_detals.player_x - playerArray[0].speed;
-        playerArray[0].originalY = player_detals.player_y;
+        player_detals.player_x -= playerArray[0].speed;
     }
     else if (keydown_info.key=='right'&&playerArray[0].x<canvas.width-playerArray[0].width) {
-        playerArray[0].originalX = player_detals.player_x + playerArray[0].speed;
-        playerArray[0].originalY = player_detals.player_y;
+        player_detals.player_x += playerArray[0].speed;
     }
     else if (keydown_info.key=='down') {
         // paste down fun()
     }
-    player_detals.player_x = playerArray[0].x;
-    player_detals.player_y = playerArray[0].y;
+    playerArray[0].originalX = player_detals.player_x;
+    playerArray[0].originalY = player_detals.player_y;
     playerArray[0].uptade();
     playerArray[0].draw();
 }
