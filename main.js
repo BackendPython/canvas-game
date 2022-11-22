@@ -68,8 +68,8 @@ class Player {
         this.color = 'blue';
     }
     uptade(){
-        this.x += this.vx;
-        this.y += this.vy;
+        // this.x += this.vx;
+        // this.y += this.vy;
         this.x = this.originalX;
         this.y = this.originalY;
     }
