@@ -3,6 +3,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+
 let bot_image = new Image();
 let player_down_image = new Image();
 let player_left_image = new Image();
