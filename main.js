@@ -1,5 +1,5 @@
 window.addEventListener('load', function(){
-    const canvas = document.getElementById('canvas1');
+const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -19,6 +19,9 @@ let space_bullet_green_image = document.getElementById('space_bullet_green');
 // player_right_image.src = 'images/space_player_right.png';
 // space_bullet_green.src = 'images/space_bullet_green.png';
 
+const keydown_info = {
+    key: 'down',
+}
 
 const components = {
     bot: bot_image,
@@ -33,6 +36,7 @@ const components = {
 let enemyleNum = 10;
 let enemyArray = [];
 let playerArray = [];
+ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
 
 class Enemy {
     constructor(){
@@ -54,7 +58,7 @@ class Enemy {
     draw(){
         // ctx.beginPath()
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.drawImage(components.bot, this.x, this.y, this.width, this.height);
         ctx.fill();
     }
@@ -83,8 +87,16 @@ class Player {
     }
     draw(){
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.drawImage(components.player_down, this.x, this.y, this.width, this.height);
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
+        if (keydown_info.key=='down') {
+            ctx.drawImage(components.player_down, this.x, this.y, this.width, this.height);
+        }
+        else if (keydown_info.key=='left') {
+            ctx.drawImage(components.player_left, this.x, this.y, this.width, this.height);
+        }
+        else if (keydown_info.key=='right') {
+            ctx.drawImage(components.player_right, this.x, this.y, this.width, this.height);
+        }
         ctx.fill();
     }
 }
@@ -118,6 +130,15 @@ function init() {
 }
 init();
 
+function keydownPlayer() {
+    window.addEventListener('keydown', function (e) {
+        let keycode = e.key;
+        if (keycode=='ArrowLeft') {
+            playerArray[0].x -= 10;
+        }
+    })
+}
+
 function handleColision() {
     for (let i = 0; i < enemyArray.length; i++) {
 
@@ -125,9 +146,8 @@ function handleColision() {
 }
 
 function animate(){
-    // ctx.clearRect(0, 0, canvas.width, canvas.height);
+    keydownPlayer();
     handleColision();
-    ctx.drawImage()
     requestAnimationFrame(animate);
 }
 
