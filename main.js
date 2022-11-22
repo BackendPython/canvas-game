@@ -3,14 +3,22 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const components = {
-    bot: '/images/components/space_bot.png',
-    player: '/images/player/space_player_down.png'
-}
+let bot_image = new Image();
+let player_down_image = new Image();
+let player_left_image = new Image();
+let player_right_image = new Image();
 
-const main_image = new Image();
-main_image.src = 'images/space_bot.png';
-main_image.alt = 'error';
+bot_image.src = 'images/space_bot.png';
+player_down_image.src = 'images/space_player_down.png';
+player_left_image.src = 'images/space_player_left.png';
+player_right_image.src = 'images/space_player_right.png';
+
+const components = {
+    bot: bot_image,
+    player_down: player_down_image,
+    player_left: player_left_image,
+    player_right: player_right_image,
+}
 
 
 let particleArray = [];
@@ -25,7 +33,7 @@ class Particle {
         this.vy = 0;
         this.speed = 10;
         this.width = 100;
-        this.height = 120;
+        this.height = 100;
         this.score = true;
         this.dead = false;
         this.color = 'red';
@@ -37,8 +45,8 @@ class Particle {
     draw(){
         // ctx.beginPath()
         ctx.fillStyle = this.color;
-        ctx.drawImage(main_image, this.x, this.y, this.width, this.height);
         ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(components.bot, this.x, this.y, this.width, this.height);
         ctx.fill();
     }
 }
@@ -112,4 +120,3 @@ function animate(){
 }
 
 // animate()
-
