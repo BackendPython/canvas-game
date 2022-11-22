@@ -5,6 +5,9 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+let enemyleNum = 10;
+let enemyArray = [];
+let playerArray = [];
 
 let bot_image = document.getElementById('space_bot');
 let space_background_image = document.getElementById('space_background');
@@ -31,21 +34,12 @@ let components = {
     player_right: player_right_image,
     space_background: space_background_image,
     space_bullet_green: space_bullet_green_image,
+    player_x: playerArray[0].x,
+    player_y: playerArray[0].y,
+
 }
-
-
-let enemyleNum = 10;
-let enemyArray = [];
-let playerArray = [];
 
 ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
-
-function player_push() {
-    playerArray.pop();
-    playerArray.push(new Player());
-    playerArray[0].uptade();
-    playerArray[0].draw();
-}
 
 class Enemy {
     constructor(){
@@ -82,7 +76,7 @@ class Player {
         this.size = 5;
         this.speed = 10;
         this.width = 150;
-        this.height = 200;
+        this.height = 150;
         this.originalX = canvas.width / 2.2;
         this.originalY = canvas.height - this.height - 10;
         this.dead = false;
@@ -157,10 +151,27 @@ function handleColision() {
 
 }
 
+function player_push() {
+    playerArray.pop();
+    playerArray.push(new Player());
+    if (keydown_info.key=='left') {
+        playerArray[0].originalX = components.player_x - 0.1;
+        playerArray[0].originalY = components.player_y;
+    }
+    else if (keydown_info.key=='right') {
+        playerArray[0].originalX = components.player_x - 0.1;
+        playerArray[0].originalY = components.player_y;
+    }
+    else if (keydown_info.key=='down') {
+        // paste down fun()
+    }
+    playerArray[0].uptade();
+    playerArray[0].draw();
+}
+
 function animate(){
     keydownPlayer();
     handleColision();
-    // drawBackground();
     requestAnimationFrame(animate);
 }
 
