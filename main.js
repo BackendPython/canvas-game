@@ -13,7 +13,9 @@ let bullet = false;
 let score = 0;
 
 let bot_image = document.getElementById('space_bot');
+let shoot_music = document.getElementById('shoot_music');
 let space_boom_image = this.document.getElementById('space_boom');
+let background_music = document.getElementById('background_music');
 let space_background_image = document.getElementById('space_background');
 let player_down_image = document.getElementById('space_player_down');
 let player_left_image = document.getElementById('space_player_left');
@@ -57,7 +59,12 @@ class Enemy {
         // ctx.beginPath()
         ctx.fillStyle = this.color;
         // ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.drawImage(components.bot, this.x, this.y, this.width, this.height);
+        if (this.originalDead==false&&this.dead==false) {
+            ctx.drawImage(components.bot, this.x, this.y, this.width, this.height);
+        }
+        else{
+            ctx.drawImage(components.space_boom, this.x, this.y, this.width, this.height);
+        }
         ctx.fill();
     }
 }
@@ -242,3 +249,5 @@ function keydownPlayer() {
 }
 
 })
+
+// ctx.drawImage(dragonSprite, this.frameX * this.originalWidth, 0, this.originalWidth, this.originalHeight, this.x -20, this.y - 12, this.width * 1.7, this.height * 1.7);
