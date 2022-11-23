@@ -42,9 +42,10 @@ class Enemy {
         this.speed = 10;
         this.width = 100;
         this.height = 100;
-        this.score = true;
+        this.score = false;
         this.dead = false;
         this.color = 'red';
+        this.originalDead = false;
     }
     uptade(){
         this.x += this.vx;
@@ -112,7 +113,8 @@ class Bullet {
     }
     draw(){
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(components.space_bullet_green, this.x, this.y, this.width, this.height);
+        // ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
     }
 }
@@ -136,8 +138,10 @@ function draw(){
     playerArray[0].uptade();
     playerArray[0].draw();
     for (let i = 0; i < enemyArray.length; i++) {
-        enemyArray[i].uptade();
-        enemyArray[i].draw();
+        if (enemyArray[i].originalDead==false) {
+            enemyArray[i].uptade();
+            enemyArray[i].draw();
+        }
     }
     for (let i = 0; i < bulletArray.length; i++) {
         bulletArray[i].uptade();
@@ -176,7 +180,21 @@ animate()
 function handleColision() {
     
     for (let i = 0; i < enemyArray.length; i++) {
-
+        for (let e = 0; e < bulletArray.length; e++) {
+            let enemy = enemyArray[i];
+            let bullet = bulletArray[e];
+            if (enemy.x < bullet.x
+                &&enemy.x + enemy.width > bullet.x
+                &&bullet.y < enemy.y + enemy.height
+                &&enemy.dead==false
+                &&enemy.score==false) {
+                enemy.dead = true;
+                score++;
+                setTimeout(() => {
+                    enemy.originalDead = true;
+                }, 500);
+            }
+        }
     }
 
 }
