@@ -8,6 +8,8 @@ canvas.height = window.innerHeight;
 let enemyleNum = 5;
 let enemyArray = [];
 let playerArray = [];
+let bulletArray = [];
+let bullet = false;
 let score = 0;
 
 let bot_image = document.getElementById('space_bot');
@@ -67,7 +69,6 @@ class Player {
         this.speed = 0.1;
         this.width = 150;
         this.height = 150;
-        this.bullet = false;
         this.originalX = canvas.width / 2.2;
         this.originalY = canvas.height - this.height - 10;
         this.dead = false;
@@ -96,8 +97,8 @@ class Player {
 
 class Bullet {
     constructor(){
-        this.x = 100;
-        this.y = 100;
+        this.x = 0;
+        this.y = 0;
         this.vx = 0;
         this.vy = 10;
         this.width = 20;
@@ -107,7 +108,7 @@ class Bullet {
     }
     uptade(){
         this.x += this.vx;
-        this.y += this.vy;
+        this.y -= this.vy;
     }
     draw(){
         ctx.fillStyle = this.color;
@@ -138,27 +139,31 @@ function draw(){
         enemyArray[i].uptade();
         enemyArray[i].draw();
     }
+    for (let i = 0; i < bulletArray.length; i++) {
+        bulletArray[i].uptade();
+        bulletArray[i].draw();
+    }
     ctx.fillStyle = 'red';
     ctx.font = '50px san-serif';
     ctx.fillText(`Score: ${score}`, 100, 100);
     ctx.fill();
 }
 
-function bullet_push() {
-    window.addEventListener('keydown', function(e){
-        let keycode = e.key;
-        if (keycode==' ') {
-            console.log('space ');
-        }
-    });
-}
+window.addEventListener('keyup', function(e){
+    let keycode = e.key;
+    if (keycode==' ') {
+        let newBullet = new Bullet();
+        newBullet.x = playerArray[0].x + (playerArray[0].width/2.3);
+        newBullet.y = playerArray[0].y - playerArray[0].height/2;
+        bulletArray.push(newBullet);
+    }
+});
 
 function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
 
     draw();
-    bullet_push();
     keydownPlayer();
     handleColision();
 
@@ -167,10 +172,6 @@ function animate(){
 
 animate()
 
-let player_detals = {
-    player_x: playerArray[0].x,
-    player_y: playerArray[0].y,
-}
 
 function handleColision() {
     
