@@ -9,10 +9,10 @@ let enemyleNum = 5;
 let enemyArray = [];
 let playerArray = [];
 let bulletArray = [];
-let bullet = false;
 let score = 0;
 
 let bot_image = document.getElementById('space_bot');
+let boom_music = document.getElementById('boom_music');
 let shoot_music = document.getElementById('shoot_music');
 let space_boom_image = this.document.getElementById('space_boom');
 let background_music = document.getElementById('background_music');
@@ -22,6 +22,7 @@ let player_right_image = document.getElementById('space_player_right');
 let space_background_image = document.getElementById('space_background');
 let space_bullet_green_image = document.getElementById('space_bullet_green');
 let space_bullet_green_boom_image = this.document.getElementById('space_bullet_green_boom');
+let bomb_sprites = []
 
 let keydown_info = {
     key: 'down',
@@ -29,6 +30,7 @@ let keydown_info = {
 
 let components = {
     bot: bot_image,
+    boom: boom_music,
     shoot: shoot_music,
     background: background_music,
     space_boom: space_boom_image,
@@ -37,6 +39,7 @@ let components = {
     player_right: player_right_image,
     space_background: space_background_image,
     space_bullet_green: space_bullet_green_image,
+    space_bullet_green_boom: space_bullet_green_boom_image,
 }
 
 
@@ -117,11 +120,14 @@ class Bullet {
         this.width = 20;
         this.height = 40;
         this.color = 'green';
+        this.remove = false;
         this.colision = false;
     }
     uptade(){
-        this.x += this.vx;
-        this.y -= this.vy;
+        if (this.colision == false) {
+            this.x += this.vx;
+            this.y -= this.vy;
+        }
     }
     draw(){
         ctx.fillStyle = this.color;
@@ -129,9 +135,8 @@ class Bullet {
             ctx.drawImage(components.space_bullet_green, this.x, this.y, this.width, this.height);
         }
         else{
-            ctx.drawImage(components.space_bullet_green, this.x, this.y, this.width, this.height);
+            ctx.drawImage(components.space_bullet_green_boom, this.x, this.y, this.width, this.height);
         }
-        // ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
     }
 }
@@ -147,6 +152,11 @@ function init() {
         enemyArray[i].x = num;
         num += 120;
     }
+    for (let i = 1; i < 6; i++) {
+        let image = document.getElementById(`bomb-${i}`);
+        bomb_sprites.push(image);
+    }
+    console.log(bomb_sprites);
 
 } init();
 
@@ -161,7 +171,7 @@ function draw(){
         }
     }
     for (let i = 0; i < bulletArray.length; i++) {
-        if (bulletArray[i].colision==false) {
+        if (bulletArray[i].remove==false) {
             bulletArray[i].uptade();
             bulletArray[i].draw();
         }
@@ -169,10 +179,8 @@ function draw(){
     ctx.fillStyle = 'red';
     ctx.font = '50px san-serif';
     ctx.fillText(`Score: ${score}`, 100, 100);
+    // components.background.play();
     ctx.fill();
-    // if (!components.background.play()) {
-        components.background.play();
-    // }
 }
 
 window.addEventListener('keyup', function(e){
@@ -211,11 +219,18 @@ function handleColision() {
                 &&bullet.y < enemy.y + enemy.height
                 &&enemy.dead==false
                 &&enemy.score==false) {
-                enemy.dead = true;
-                score++;
+                    bullet.colision = true;
+                    bullet.width = canvas.width / 30;
+                    bullet.height = bullet.width;
+                    bullet.x = bullet.x - 25;
+                    bullet.y = bullet.y - 25;
+                    enemy.dead = true;
+                    score++;
+                setTimeout(() => {
+                    bullet.remove = true;
+                }, 200);
                 setTimeout(() => {
                     enemy.originalDead = true;
-                    bullet.colision = true;
                 }, 1000);
             }
         }
