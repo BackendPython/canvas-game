@@ -67,6 +67,7 @@ class Player {
         this.speed = 0.1;
         this.width = 150;
         this.height = 150;
+        this.bullet = false;
         this.originalX = canvas.width / 2.2;
         this.originalY = canvas.height - this.height - 10;
         this.dead = false;
@@ -89,6 +90,28 @@ class Player {
         if (keydown_info.key=='right') {
             ctx.drawImage(components.player_right, this.x, this.y, this.width, this.height);
         }
+        ctx.fill();
+    }
+}
+
+class Bullet {
+    constructor(){
+        this.x = 100;
+        this.y = 100;
+        this.vx = 0;
+        this.vy = 10;
+        this.width = 20;
+        this.height = 40;
+        this.color = 'green';
+        this.colision = false;
+    }
+    uptade(){
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+    draw(){
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
     }
 }
@@ -121,11 +144,21 @@ function draw(){
     ctx.fill();
 }
 
+function bullet_push() {
+    window.addEventListener('keydown', function(e){
+        let keycode = e.key;
+        if (keycode==' ') {
+            console.log('space ');
+        }
+    });
+}
+
 function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
 
     draw();
+    bullet_push();
     keydownPlayer();
     handleColision();
 
@@ -139,7 +172,6 @@ let player_detals = {
     player_y: playerArray[0].y,
 }
 
-
 function handleColision() {
     
     for (let i = 0; i < enemyArray.length; i++) {
@@ -150,16 +182,14 @@ function handleColision() {
 
 function player_push() {
     if (keydown_info.key=='left'&&playerArray[0].x > 0) {
-        player_detals.player_x -= playerArray[0].speed;
+        playerArray[0].originalX -= playerArray[0].speed;
     }
     else if (keydown_info.key=='right'&&playerArray[0].x<canvas.width-playerArray[0].width) {
-        player_detals.player_x += playerArray[0].speed;
+        playerArray[0].originalX += playerArray[0].speed;
     }
     else if (keydown_info.key=='down') {
         // paste down fun()
     }
-    playerArray[0].originalX = player_detals.player_x;
-    playerArray[0].originalY = player_detals.player_y;
     playerArray[0].uptade();
     playerArray[0].draw();
 }
