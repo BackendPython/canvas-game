@@ -16,11 +16,12 @@ let bot_image = document.getElementById('space_bot');
 let shoot_music = document.getElementById('shoot_music');
 let space_boom_image = this.document.getElementById('space_boom');
 let background_music = document.getElementById('background_music');
-let space_background_image = document.getElementById('space_background');
 let player_down_image = document.getElementById('space_player_down');
 let player_left_image = document.getElementById('space_player_left');
 let player_right_image = document.getElementById('space_player_right');
+let space_background_image = document.getElementById('space_background');
 let space_bullet_green_image = document.getElementById('space_bullet_green');
+let space_bullet_green_boom_image = this.document.getElementById('space_bullet_green_boom');
 
 let keydown_info = {
     key: 'down',
@@ -28,6 +29,8 @@ let keydown_info = {
 
 let components = {
     bot: bot_image,
+    shoot: shoot_music,
+    background: background_music,
     space_boom: space_boom_image,
     player_down: player_down_image,
     player_left: player_left_image,
@@ -122,7 +125,12 @@ class Bullet {
     }
     draw(){
         ctx.fillStyle = this.color;
-        ctx.drawImage(components.space_bullet_green, this.x, this.y, this.width, this.height);
+        if (this.colision==false) {
+            ctx.drawImage(components.space_bullet_green, this.x, this.y, this.width, this.height);
+        }
+        else{
+            ctx.drawImage(components.space_bullet_green, this.x, this.y, this.width, this.height);
+        }
         // ctx.fillRect(this.x, this.y, this.width, this.height);
         ctx.fill();
     }
@@ -153,13 +161,18 @@ function draw(){
         }
     }
     for (let i = 0; i < bulletArray.length; i++) {
-        bulletArray[i].uptade();
-        bulletArray[i].draw();
+        if (bulletArray[i].colision==false) {
+            bulletArray[i].uptade();
+            bulletArray[i].draw();
+        }
     }
     ctx.fillStyle = 'red';
     ctx.font = '50px san-serif';
     ctx.fillText(`Score: ${score}`, 100, 100);
     ctx.fill();
+    // if (!components.background.play()) {
+        components.background.play();
+    // }
 }
 
 window.addEventListener('keyup', function(e){
@@ -169,6 +182,7 @@ window.addEventListener('keyup', function(e){
         newBullet.x = playerArray[0].x + (playerArray[0].width/2.3);
         newBullet.y = playerArray[0].y - playerArray[0].height/2;
         bulletArray.push(newBullet);
+        components.shoot.play();
     }
 });
 
@@ -201,7 +215,8 @@ function handleColision() {
                 score++;
                 setTimeout(() => {
                     enemy.originalDead = true;
-                }, 500);
+                    bullet.colision = true;
+                }, 1000);
             }
         }
     }
@@ -250,4 +265,3 @@ function keydownPlayer() {
 
 })
 
-// ctx.drawImage(dragonSprite, this.frameX * this.originalWidth, 0, this.originalWidth, this.originalHeight, this.x -20, this.y - 12, this.width * 1.7, this.height * 1.7);
