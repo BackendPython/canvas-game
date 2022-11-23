@@ -13,6 +13,7 @@ let bullet = false;
 let score = 0;
 
 let bot_image = document.getElementById('space_bot');
+let space_boom_image = this.document.getElementById('space_boom');
 let space_background_image = document.getElementById('space_background');
 let player_down_image = document.getElementById('space_player_down');
 let player_left_image = document.getElementById('space_player_left');
@@ -25,6 +26,7 @@ let keydown_info = {
 
 let components = {
     bot: bot_image,
+    space_boom: space_boom_image,
     player_down: player_down_image,
     player_left: player_left_image,
     player_right: player_right_image,
