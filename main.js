@@ -285,18 +285,23 @@ function enemy_create_stop(){
 }
 
 function animate(){
+    let reload_button = document.getElementById('reload_button');
     if (playerArray[0].originalDead==false) {
+        reload_button.style.display = 'none';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
-    
+
         draw();
+    }
+    else{
+        reload_button.style.display = 'flex';
     }
     enemy_bullet();
     handleColision();
     requestAnimationFrame(animate);
 }
 
-animate()
+// animate()
 
 
 function handleColision() {

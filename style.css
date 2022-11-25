@@ -4,6 +4,7 @@
     box-sizing: border-box;
 }
 
+
 #canvas1{
     top: 0;
     left: 0;
@@ -15,4 +16,31 @@
 
 .images{
     display: none;
+}
+
+.controllers{
+    top: 35%;
+    width: 50%;
+    left: 24.5%;
+    height: 30%;
+    z-index: 100;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+}
+.controllers #reload_button{
+    width: 10%;
+    color: red;
+    display: flex;
+    padding: 2% 10%;
+    font-size: large;
+    align-items: center;
+    justify-content: center;
+    background-color: green;
+}
+.controllers #reload_button:hover{
+    cursor: pointer;
+    box-shadow: 5px 10px 2px black;
 }
