@@ -86,12 +86,14 @@ class Player {
         this.y = 0;
         this.vx = 0;
         this.vy = 0;
+        this.frame = 0;
         this.size = 150;
         this.speed = 40;
         this.width = 150;
         this.height = 150;
         this.originalX = canvas.width / 2.2;
         this.originalY = canvas.height - this.height - 100;
+        this.originalDead = false;
         this.dead = false;
         this.color = 'blue';
     }
@@ -103,15 +105,24 @@ class Player {
     }
     draw(){
         ctx.fillStyle = this.color;
-        if (keydown_info.key=='down') {
-            ctx.drawImage(components.player_down, this.x, this.y, this.width, this.height);
+        if (this.dead==false) {
+            if (keydown_info.key=='down') {
+                ctx.drawImage(components.player_down, this.x, this.y, this.width, this.height);
+            }
+            if (keydown_info.key=='left') {
+                ctx.drawImage(components.player_left, this.x, this.y, this.width, this.height);
+            }
+            if (keydown_info.key=='right') {
+                ctx.drawImage(components.player_right, this.x, this.y, this.width, this.height);
+            }
         }
-        if (keydown_info.key=='left') {
-            ctx.drawImage(components.player_left, this.x, this.y, this.width, this.height);
+        else{
+            if(this.frame%1 === 0&&this.frame<6){
+                ctx.drawImage(bomb_sprites[this.frame], this.x, this.y, this.width, this.height);
+                this.frame++;
+            }
         }
-        if (keydown_info.key=='right') {
-            ctx.drawImage(components.player_right, this.x, this.y, this.width, this.height);
-        }
+        
         ctx.fill();
     }
 }
@@ -213,6 +224,7 @@ function enemy_bullet() {
                 enemy.bullet = 0;
                 let newBullet = new Bullet();
                 newBullet.vy = -10;
+                newBullet.push = 'enemy';
                 newBullet.y = enemy.y + enemy.height/2;
                 newBullet.x = enemy.x + (enemy.width/2.3);
                 bulletArray.push(newBullet);
@@ -223,10 +235,11 @@ function enemy_bullet() {
 
 window.addEventListener('keyup', function(e){
     let keycode = e.key;
-    if (keycode==' ') {
+    if (keycode==' '&&playerArray[0].dead==false) {
         let newBullet = new Bullet();
         newBullet.x = playerArray[0].x + (playerArray[0].width/2.3);
         newBullet.y = playerArray[0].y - playerArray[0].height/2;
+        newBullet.push = 'player';
         bulletArray.push(newBullet);
         components.shoot.play();
     }
@@ -261,11 +274,14 @@ function handleColision() {
         for (let e = 0; e < bulletArray.length; e++) {
             let enemy = enemyArray[i];
             let bullet = bulletArray[e];
+            let player = playerArray[0];
+            // enemy & bullet colision
             if (enemy.x < bullet.x
                 &&enemy.x + enemy.width > bullet.x
                 &&enemy.y < bullet.y
                 &&bullet.y < enemy.y + enemy.height
                 &&bullet.colision == false
+                &&bullet.push=='player'
                 &&enemy.dead==false
                 &&enemy.score==false) {
                     bullet.colision = true;
@@ -281,6 +297,28 @@ function handleColision() {
                 }, 200);
                 setTimeout(() => {
                     enemy.originalDead = true;
+                }, 1000);
+            }
+            // player & bullet colision
+            if (player.x < bullet.x
+                &&player.x + player.width > bullet.x
+                &&player.y < bullet.y
+                &&bullet.y < player.y + player.height
+                &&bullet.colision == false
+                &&bullet.push=='enemy'
+                &&player.dead==false) {
+                    bullet.colision = true;
+                    bullet.width = canvas.width / 30;
+                    bullet.height = bullet.width;
+                    bullet.x = bullet.x - 25;
+                    bullet.y = bullet.y - 25;
+                    components.boom.play();
+                    player.dead = true;
+                setTimeout(() => {
+                    bullet.remove = true;
+                }, 200);
+                setTimeout(() => {
+                    player.originalDead = true;
                 }, 1000);
             }
         }
