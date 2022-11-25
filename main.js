@@ -5,6 +5,7 @@ const ctx = canvas.getContext('2d');
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 
+let hue = 0;
 let score = 0;
 let enemyNum = 0;
 let enemyArray = [];
@@ -48,21 +49,21 @@ class Particle {
     constructor(){
         this.x = 0;
         this.y = 0;
-        this.vx = 0;
-        this.vy = 0;
-        this.size = 0;
-        this.color = 'red';
-        this.originalX = 0;
-        this.originalY = 0;
+        this.size = Math.random() * 15 + 1;
+        this.speedX = Math.random() * 3 -1.5;
+        this.speedY = Math.random() * 3 -1.5;
+        this.color = 'hsl('+ hue + ', 100%, 50%)'
     }
     uptade(){
-        this.x += this.vx;
-        this.y += this.vy;
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.size>0.2) this.size -= 0.1;
     }
     draw(){
         ctx.fillStyle = this.color;
-        ctx.arc(this.x, this.y, this.size, this.size);
-        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill()
     }
 }
 
@@ -186,11 +187,6 @@ function init() {
     for (let i = 0; i < enemyNum; i++) {
         enemyArray.push(new Enemy());
     }
-    for (let i = 0; i < 10; i++) {
-        let newParticle = new Particle();
-        newParticle.x = Math.random() * canvas.width;
-        newParticle.y = playerArray[0].y + Math.random() * 2;
-    }
     for (let i = 1; i < 7; i++) {
         let image = document.getElementById(`bomb-${i}`);
         bomb_sprites.push(image);
@@ -246,7 +242,7 @@ function enemy_bullet() {
     for (let i = 0; i < enemyArray.length; i++) {
         let enemy = enemyArray[i];
         if (enemy.dead==false) {
-            if (enemy.bullet<300) {
+            if (enemy.bullet<200) {
                 enemy.bullet+=1;
             }
             else if (enemy.bullet>=100){
@@ -289,10 +285,12 @@ function enemy_create_stop(){
 }
 
 function animate(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
-
-    draw();
+    if (playerArray[0].originalDead==false) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
+    
+        draw();
+    }
     enemy_bullet();
     handleColision();
     requestAnimationFrame(animate);
@@ -352,7 +350,7 @@ function handleColision() {
                 }, 200);
                 setTimeout(() => {
                     player.originalDead = true;
-                }, 1000);
+                }, 500);
             }
         }
     }
@@ -360,6 +358,14 @@ function handleColision() {
 }
 
 function player_push() {
+    if (playerArray[0].dead==false) {
+            // hue++;
+    // for (let i = 0; i < 1; i++) {
+    //     let newParticle = new Particle();
+    //     newParticle.x = playerArray[0].x + playerArray[0].width;
+    //     newParticle.y = playerArray[0].y + playerArray[0].width/2;
+    //     particleArray.push(newParticle);
+    // }
     if (keydown_info.key=='left'&&playerArray[0].x > 0) {
         playerArray[0].originalX -= playerArray[0].speed;
     }
@@ -368,6 +374,7 @@ function player_push() {
     }
     else if (keydown_info.key=='down') {
         // paste down fun()
+    }
     }
 }
 
