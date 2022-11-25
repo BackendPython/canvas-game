@@ -10,7 +10,7 @@ let enemyArray = [];
 let playerArray = [];
 let bulletArray = [];
 let score = 0;
-let enemy_recovery_time = 3000;
+let enemy_recovery_time = 1000;
 
 let bot_image = document.getElementById('space_bot');
 let boom_music = document.getElementById('boom_music');
@@ -250,10 +250,14 @@ let create_enemy = setInterval(() => {
     let random = Math.random() * canvas.width;
     new_enemy.x = random;
     enemyArray.push(new_enemy);
-    if (score>10&&enemy_recovery_time>1000) {
-        enemy_recovery_time -= 500;
+    if (playerArray[0].dead==true) {
+        enemy_create_stop();
     }
 }, enemy_recovery_time);
+
+function enemy_create_stop(){
+    clearInterval(create_enemy);
+}
 
 function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
