@@ -2,14 +2,15 @@ window.addEventListener('load', function(){
 
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
 
-let enemyleNum = 0;
+let score = 0;
+let enemyNum = 0;
 let enemyArray = [];
 let playerArray = [];
 let bulletArray = [];
-let score = 0;
+let particleArray = [];
 let enemy_recovery_time = 1000;
 
 let bot_image = document.getElementById('space_bot');
@@ -43,6 +44,27 @@ let components = {
     space_bullet_green_boom: space_bullet_green_boom_image,
 }
 
+class Particle {
+    constructor(){
+        this.x = 0;
+        this.y = 0;
+        this.vx = 0;
+        this.vy = 0;
+        this.size = 0;
+        this.color = 'red';
+        this.originalX = 0;
+        this.originalY = 0;
+    }
+    uptade(){
+        this.x += this.vx;
+        this.y += this.vy;
+    }
+    draw(){
+        ctx.fillStyle = this.color;
+        ctx.arc(this.x, this.y, this.size, this.size);
+        ctx.fill();
+    }
+}
 
 class Enemy {
     constructor(){
@@ -161,14 +183,14 @@ class Bullet {
 
 function init() {
     playerArray.push(new Player());
-    for (let i = 0; i < enemyleNum; i++) {
+    for (let i = 0; i < enemyNum; i++) {
         enemyArray.push(new Enemy());
     }
-    // let num = enemyArray[0].x;
-    // for (let i = 0; i < enemyArray.length; i++) {
-    //     enemyArray[i].x = num;
-    //     num += 120;
-    // }
+    for (let i = 0; i < 10; i++) {
+        let newParticle = new Particle();
+        newParticle.x = Math.random() * canvas.width;
+        newParticle.y = playerArray[0].y + Math.random() * 2;
+    }
     for (let i = 1; i < 7; i++) {
         let image = document.getElementById(`bomb-${i}`);
         bomb_sprites.push(image);
@@ -203,6 +225,13 @@ function draw(){
         if (bulletArray[i].remove==false) {
             bulletArray[i].uptade();
             bulletArray[i].draw();
+        }
+    }
+    for (let i = 0; i < particleArray.length; i++) {
+        let particle = particleArray[i];
+        if (particle.size > 2) {
+            particle.uptade();
+            particle.draw();
         }
     }
     ctx.fillStyle = 'red';
