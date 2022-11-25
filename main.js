@@ -285,18 +285,18 @@ function enemy_create_stop(){
 }
 
 function animate(){
-    let reload_button = document.getElementById('reload_button');
+    let reload_box = document.querySelector('.controllers');
     if (playerArray[0].originalDead==false) {
-        reload_button.style.display = 'none';
+        reload_box.style.display = 'none';
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
 
         draw();
     }
     else{
-        
         components.background.play();
-        reload_button.style.display = 'flex';
+        reload_box.style.display = 'flex';
+        document.getElementById('score_text').innerHTML = `Your score is:  ${score}`;
     }
     enemy_bullet();
     handleColision();
