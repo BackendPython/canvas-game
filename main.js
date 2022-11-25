@@ -270,18 +270,25 @@ window.addEventListener('keyup', function(e){
     }
 });
 
-let create_enemy = setInterval(() => {
+function create_enemy_fun(){
     let new_enemy = new Enemy();
     let random = Math.random() * canvas.width;
     new_enemy.x = random;
     enemyArray.push(new_enemy);
-    if (playerArray[0].dead==true) {
-        enemy_create_stop();
+}
+
+let create_enemy = setInterval(() => {
+    if (playerArray[0].dead==false) {
+        create_enemy_fun();
     }
 }, enemy_recovery_time);
 
-function enemy_create_stop(){
-    clearInterval(create_enemy);
+function reload_game(){
+    score = 0;
+    enemyArray.length = 0;
+    bulletArray.length = 0;
+    playerArray[0].dead = false;
+    playerArray[0].originalDead = false;
 }
 
 function animate(){
@@ -297,6 +304,9 @@ function animate(){
         components.background.play();
         reload_box.style.display = 'flex';
         document.getElementById('score_text').innerHTML = `Your score is:  ${score}`;
+        document.getElementById('reload_button').addEventListener('click', function(){
+            reload_game();
+        })
     }
     enemy_bullet();
     handleColision();
@@ -366,7 +376,7 @@ function handleColision() {
 
 function player_push() {
     if (playerArray[0].dead==false) {
-            // hue++;
+    // hue++;
     // for (let i = 0; i < 1; i++) {
     //     let newParticle = new Particle();
     //     newParticle.x = playerArray[0].x + playerArray[0].width;
