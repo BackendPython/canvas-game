@@ -87,7 +87,7 @@ class Player {
         this.vx = 0;
         this.vy = 0;
         this.size = 150;
-        this.speed = 0.1;
+        this.speed = 40;
         this.width = 150;
         this.height = 150;
         this.originalX = canvas.width / 2.2;
@@ -124,6 +124,7 @@ class Bullet {
         this.vy = 10;
         this.width = 20;
         this.height = 40;
+        this.push = null;
         this.color = 'green';
         this.remove = false;
         this.colision = false;
@@ -200,6 +201,26 @@ function draw(){
     ctx.fill();
 }
 
+
+function enemy_bullet() {
+    for (let i = 0; i < enemyArray.length; i++) {
+        let enemy = enemyArray[i];
+        if (enemy.dead==false) {
+            if (enemy.bullet<300) {
+                enemy.bullet+=1;
+            }
+            else if (enemy.bullet>=100){
+                enemy.bullet = 0;
+                let newBullet = new Bullet();
+                newBullet.vy = -10;
+                newBullet.y = enemy.y + enemy.height/2;
+                newBullet.x = enemy.x + (enemy.width/2.3);
+                bulletArray.push(newBullet);
+            }
+        }
+    }
+}
+
 window.addEventListener('keyup', function(e){
     let keycode = e.key;
     if (keycode==' ') {
@@ -216,12 +237,9 @@ let create_enemy = setInterval(() => {
     let random = Math.random() * canvas.width;
     new_enemy.x = random;
     enemyArray.push(new_enemy);
-    // if (score>5&&score<10) {
-    //     enemy_recovery_time -= 500;
-    // }
-    // if (score>10&&score<20) {
-    //     enemy_recovery_time -= 500;
-    // }
+    if (score>10&&enemy_recovery_time>1000) {
+        enemy_recovery_time -= 500;
+    }
 }, enemy_recovery_time);
 
 function animate(){
@@ -229,8 +247,8 @@ function animate(){
     ctx.drawImage(components.space_background, 0, 0, canvas.width, canvas.height);
 
     draw();
+    enemy_bullet();
     handleColision();
-
     requestAnimationFrame(animate);
 }
 
@@ -272,35 +290,44 @@ function handleColision() {
 
 function player_push() {
     if (keydown_info.key=='left'&&playerArray[0].x > 0) {
-        playerArray[0].originalX -= 100;
+        playerArray[0].originalX -= playerArray[0].speed;
     }
     else if (keydown_info.key=='right'&&playerArray[0].x + playerArray[0].width <canvas.width) {
-        playerArray[0].originalX += 100;
+        playerArray[0].originalX += playerArray[0].speed;
     }
     else if (keydown_info.key=='down') {
         // paste down fun()
     }
 }
 
-window.addEventListener('keyup', function (e) {
+window.addEventListener('keydown', function (e) {
     let keycode = e.key;
     if (keycode=='ArrowLeft') {
         keydown_info.key = 'left';
         player_push();
-        setTimeout(() => {
-            keydown_info.key = 'down';
-        }, 10);
+        // setTimeout(() => {
+        //     keydown_info.key = 'down';
+        // }, 10);
     }
     else if (keycode=='ArrowRight') {
         keydown_info.key = 'right';
         player_push();
-        setTimeout(() => {
-            keydown_info.key = 'down';
-        }, 10);
+        // setTimeout(() => {
+        //     keydown_info.key = 'down';
+        // }, 10);
     }
-    // else if (keycode) {
-    //     keydown_info.key = 'down';
-    // }
+})
+
+window.addEventListener('keyup', function(e){
+    let keycode = e.key
+    if (keycode=='ArrowLeft') {
+        keydown_info.key = 'down';
+        player_push();
+    }
+    else if (keycode=='ArrowRight') {
+        keydown_info.key = 'down';
+        player_push();
+    }
 })
 
 })
