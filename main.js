@@ -294,6 +294,8 @@ function animate(){
         draw();
     }
     else{
+        
+        components.background.play();
         reload_button.style.display = 'flex';
     }
     enemy_bullet();
@@ -301,7 +303,7 @@ function animate(){
     requestAnimationFrame(animate);
 }
 
-// animate()
+animate()
 
 
 function handleColision() {
